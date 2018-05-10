@@ -203,6 +203,11 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
             for (int i = 0; i < play_lists.size(); i++) {
                 play_lists.get(i).setSelect(false);
             }
+            for (int i = 0; i < time_lists.size(); i++) {
+                for (int i1 = 0; i1 < time_lists.get(i).getRole_list().size(); i1++) {
+                    time_lists.get(i).getRole_list().get(i1).setSelect(false);
+                }
+            }
             notifyDataSetChanged();
         }
         @Override
