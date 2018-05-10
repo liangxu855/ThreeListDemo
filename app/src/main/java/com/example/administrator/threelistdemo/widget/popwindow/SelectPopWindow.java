@@ -37,7 +37,7 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
     private List<SelectTimeAndRole> selectTimeAndRoleList = new ArrayList<>(); //选择的时间 角色
     private final FirstListAdapter firstListAdapter;
 
-    public SelectPopWindow(Activity activity, PlayDataBean playDataBean, RoleDataBean roleDataBean, final SelectCategory selectCategory) {
+    public SelectPopWindow(Activity activity, PlayDataBean playDataBean, final RoleDataBean roleDataBean, final SelectCategory selectCategory) {
         this.playDataBean = playDataBean;
         this.roleDataBean = roleDataBean;
         this.selectCategory = selectCategory;
@@ -88,6 +88,7 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
             public void clickTime(View view, final RoleDataBean.Time_list time_list) {
                 Log.e("添加角色", "d点击了" + time_list.getTime());
                 secondListAdapter = new SecondListAdapter(time_list.getRole_list());
+
                 secondList.setAdapter(secondListAdapter);
                 secondListAdapter.setOnItemClickListener(new SecondListAdapter.OnItemClickListener() {
                     @Override
@@ -139,16 +140,8 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
     private void delete() {
         selectPlay.clear();
         selectTimeAndRoleList.clear();
-        for (int i = 0; i < playDataBean.getPlay_list().size(); i++) {
-            playDataBean.getPlay_list().get(i).setSelect(false);
-        }
-        for (int i = 0; i < roleDataBean.getTime_list().size(); i++) {
-            for (int i1 = 0; i1 < roleDataBean.getTime_list().get(i).getRole_list().size(); i1++) {
-                roleDataBean.getTime_list().get(i).getRole_list().get(i).setSelect(false);
-            }
-        }
-        firstListAdapter.notifyDataSetChanged();
-        secondListAdapter.notifyDataSetChanged();
+        firstListAdapter.clearData();
+        secondListAdapter.ClearData();
     }
 
     private void selectRole() {
@@ -206,7 +199,12 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
             this.state = state;
             notifyDataSetChanged();
         }
-
+        public void clearData(){
+            for (int i = 0; i < play_lists.size(); i++) {
+                play_lists.get(i).setSelect(false);
+            }
+            notifyDataSetChanged();
+        }
         @Override
         public FirstListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_base_use, parent, false);
@@ -284,6 +282,13 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
 
         public SecondListAdapter(List<RoleDataBean.Role_list> list) {
             this.list = list;
+        }
+
+        public void ClearData() {
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).setSelect(false);
+            }
+            notifyDataSetChanged();
         }
 
         @Override
