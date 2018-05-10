@@ -24,8 +24,6 @@ import java.util.List;
 public class SelectPopWindow extends PopupWindow implements View.OnClickListener {
 
     private SelectCategory selectCategory;
-    private PlayDataBean playDataBean;
-    private RoleDataBean roleDataBean;
     private TextView play;
     private TextView role;
     private View contentView;
@@ -37,9 +35,8 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
     private List<SelectTimeAndRole> selectTimeAndRoleList = new ArrayList<>(); //选择的时间 角色
     private final FirstListAdapter firstListAdapter;
 
-    public SelectPopWindow(Activity activity, PlayDataBean playDataBean, final RoleDataBean roleDataBean, final SelectCategory selectCategory) {
-        this.playDataBean = playDataBean;
-        this.roleDataBean = roleDataBean;
+    public SelectPopWindow(Activity activity, PlayDataBean playDataBean, RoleDataBean roleDataBean ,SelectCategory selectCategory) {
+
         this.selectCategory = selectCategory;
         contentView = LayoutInflater.from(activity).inflate(R.layout.layout_quyu_choose_view, null);
         DisplayMetrics dm = new DisplayMetrics();
@@ -85,21 +82,27 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
             }
 
             @Override
-            public void clickTime(View view, final RoleDataBean.Time_list time_list) {
-                Log.e("添加角色", "d点击了" + time_list.getTime());
-                secondListAdapter = new SecondListAdapter(time_list.getRole_list());
-
+            public void clickTime(View view, final List<RoleDataBean.Time_list> time_lists, final int position) {
+                Log.e("添加角色", "d点击了" + time_lists.get(position).getTime());
+                for (int i = 0; i < time_lists.size(); i++) {
+                    if (time_lists.get(i).isSelect()){
+                        time_lists.get(i).setSelect(false);
+                    }
+                }
+                time_lists.get(position).setSelect(true);
+                firstListAdapter.notifyDataSetChanged();
+                secondListAdapter = new SecondListAdapter(time_lists.get(position).getRole_list());
                 secondList.setAdapter(secondListAdapter);
                 secondListAdapter.setOnItemClickListener(new SecondListAdapter.OnItemClickListener() {
                     @Override
                     public void click(View view, RoleDataBean.Role_list roleList) {
                         for (int i = 0; i < selectTimeAndRoleList.size(); i++) {
-                            if (selectTimeAndRoleList.get(i).getTime().equals(time_list.getTime()) && selectTimeAndRoleList.get(i).getRole().equals(roleList.getRole()) && selectTimeAndRoleList.get(i).getState().equals(roleList.getState())) {
+                            if (selectTimeAndRoleList.get(i).getTime().equals(time_lists.get(position).getTime()) && selectTimeAndRoleList.get(i).getRole().equals(roleList.getRole()) && selectTimeAndRoleList.get(i).getState().equals(roleList.getState())) {
                                 return;
                             }
                         }
                         roleList.setSelect(true);
-                        SelectTimeAndRole selectTimeAndRole = new SelectTimeAndRole(time_list.getTime(), roleList.getRole(), roleList.getState());
+                        SelectTimeAndRole selectTimeAndRole = new SelectTimeAndRole(time_lists.get(position).getTime(), roleList.getRole(), roleList.getState());
                         selectTimeAndRoleList.add(selectTimeAndRole);
                         view.setBackgroundColor(Color.GREEN);
                         Log.e("添加角色", selectTimeAndRole.toString());
@@ -218,7 +221,7 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
         }
 
         @Override
-        public void onBindViewHolder(final FirstListAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(final FirstListAdapter.ViewHolder holder, final int position) {
             if (state == STATE_PLAY) {
                 if (play_lists.get(position).isSelect()){
                     holder.mText.setBackgroundColor(Color.GREEN);
@@ -236,14 +239,18 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
                     }
                 });
             } else {
+                if (time_lists.get(position).isSelect()){
+                    holder.mText.setBackgroundColor(Color.GREEN);
+                }else{
+                    holder.mText.setBackgroundColor(Color.WHITE);
+                }
                 holder.mText.setText(time_lists.get(position).getTime());
-                holder.mText.setBackgroundColor(Color.WHITE);
                 final int mPosition = position;
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (onItemClickListener != null) {
-                            onItemClickListener.clickTime(view, time_lists.get(mPosition));
+                            onItemClickListener.clickTime(view,time_lists,position);
                         }
                     }
                 });
@@ -278,7 +285,7 @@ public class SelectPopWindow extends PopupWindow implements View.OnClickListener
         interface OnItemClickListener {
             void clickPlay(View view, PlayDataBean.Play_list play_list);
 
-            void clickTime(View view, RoleDataBean.Time_list time_list);
+            void clickTime(View view, List<RoleDataBean.Time_list> time_lists,int position);
         }
     }
 
