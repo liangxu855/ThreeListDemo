@@ -12,7 +12,11 @@ public class SelectTimeAndRole {
     }public SelectTimeAndRole() {
 
     }
-
+    public void clear(){
+        time = "";
+        role = "";
+        state = "";
+    }
     public String getTime() {
         return time;
     }

@@ -13,8 +13,6 @@ import com.example.administrator.threelistdemo.model.SelectTimeAndRole;
 import com.example.administrator.threelistdemo.widget.popwindow.SelectPopWindow;
 import com.google.gson.Gson;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements SelectPopWindow.SelectCategory {
     TextView tvResult;
     public static final String playJson = "{\"play_list\":[{\"name\":\"欢乐喜剧人\"},{\"name\":\"大闹天竺\"},{\"name\":\"少年巴比伦\"},{\"name\":\"天空之眼\"},{\"name\":\"咸鱼传奇\"}]}";
@@ -51,9 +49,9 @@ public class MainActivity extends AppCompatActivity implements SelectPopWindow.S
     }
 
     @Override
-    public void selectCategory(List<String> selectPlay, List<SelectTimeAndRole> selectTimeAndRoles) {
+    public void selectCategory(String selectPlay, SelectTimeAndRole selectTimeAndRole) {
         mPopupWindow.dismiss();
-        Toast.makeText(this,selectPlay.toString()+selectTimeAndRoles.toString(),Toast.LENGTH_SHORT).show();
-        tvResult.setText(selectPlay.toString()+selectTimeAndRoles.toString());
+        Toast.makeText(this,selectPlay+selectTimeAndRole.toString(),Toast.LENGTH_SHORT).show();
+        tvResult.setText(selectPlay+selectTimeAndRole.toString());
     }
 }
