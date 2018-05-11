@@ -26,15 +26,6 @@ public class RoleDataBean {
             isSelect = select;
         }
 
-        public boolean isSelect() {
-            return isSelect;
-        }
-
-        public void setSelect(boolean select) {
-            isSelect = select;
-        }
-
-        private boolean isSelect = false;
         private List<Role_list> role_list;
 
         public void setTime(String time) {
