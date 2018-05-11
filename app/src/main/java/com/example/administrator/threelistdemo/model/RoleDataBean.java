@@ -17,6 +17,15 @@ public class RoleDataBean {
     public class Time_list {
         private String time;
 
+        public boolean isSelect() {
+            return isSelect;
+        }
+
+        public void setSelect(boolean select) {
+            isSelect = select;
+        }
+
+        private boolean isSelect = false;
         private List<Role_list> role_list;
 
         public void setTime(String time) {
